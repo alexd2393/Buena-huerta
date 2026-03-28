@@ -11,6 +11,9 @@ jobs:
   build:
     name: Build Debug APK
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: huerta-app
 
     steps:
       - name: 📥 Checkout code
@@ -26,23 +29,26 @@ jobs:
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 📦 Download Gradle Wrapper JAR y generar gradlew
+      - name: 📦 Preparar Gradle Wrapper
         run: |
           mkdir -p gradle/wrapper
           curl -sL "https://github.com/gradle/gradle/raw/v8.4.0/gradle/wrapper/gradle-wrapper.jar" \
             -o gradle/wrapper/gradle-wrapper.jar
+          if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
+            printf 'distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.4-all.zip\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n' > gradle/wrapper/gradle-wrapper.properties
+          fi
           if [ ! -f "gradlew" ]; then
             printf '#!/usr/bin/env sh\nif [ -n "$JAVA_HOME" ]; then\n  JAVACMD="$JAVA_HOME/bin/java"\nelse\n  JAVACMD="java"\nfi\nAPP_HOME="$(cd "$(dirname "$0")" && pwd -P)"\nCLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"\nexec "$JAVACMD" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"\n' > gradlew
           fi
           chmod +x gradlew
 
-      - name: 📦 Cache Gradle packages
+      - name: 📦 Cache Gradle
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('huerta-app/**/*.gradle*', 'huerta-app/**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
@@ -53,13 +59,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: huerta-emoji-apk-${{ github.run_number }}
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: huerta-app/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
           if-no-files-found: error
 
       - name: ✅ Build Summary
         run: |
           echo "## 🌱 Build exitoso!" >> $GITHUB_STEP_SUMMARY
-          echo "**APK generado:** \`app-debug.apk\`" >> $GITHUB_STEP_SUMMARY
           ls -lh app/build/outputs/apk/debug/app-debug.apk >> $GITHUB_STEP_SUMMARY
-          echo "📥 Descargá el APK desde la sección **Artifacts**." >> $GITHUB_STEP_SUMMARY
+          echo "📥 Descargá el APK desde Artifacts." >> $GITHUB_STEP_SUMMARY
