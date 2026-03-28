@@ -22,379 +22,232 @@
     --cell: 42px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  /* ── ZOOM BAR ── */
+  .zoom-bar { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .zoom-btn {
+    width:32px; height:32px; border-radius:8px;
+    border:1.5px solid var(--green); background:white; color:var(--green);
+    font-size:18px; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    transition:all 0.15s;
+  }
+  .zoom-btn:active { background:var(--green); color:white; }
+  .zoom-label { font-size:12px; color:var(--gray); min-width:38px; text-align:center; font-weight:600; }
+
+  /* ── GRID LABELS ── */
+  .col-labels { display:flex; padding-left:22px; margin-bottom:1px; overflow:hidden; }
+  .col-label  { text-align:center; font-size:9px; color:#a0785a; font-weight:700; flex-shrink:0; }
+  .grid-with-labels { display:flex; }
+  .row-labels { display:flex; flex-direction:column; width:20px; flex-shrink:0; }
+  .row-label  { font-size:9px; color:#a0785a; font-weight:700; text-align:right; padding-right:3px;
+                display:flex; align-items:center; justify-content:flex-end; flex-shrink:0; }
+
+  /* ── UNDO/REDO ── */
+  .icon-btn:disabled { opacity:0.3; pointer-events:none; }
+
+  /* ── TUTORIAL ── */
+  .tutorial-slide { display:none; text-align:center; padding:4px 0 10px; }
+  .tutorial-slide.active { display:block; }
+  .tutorial-emoji { font-size:52px; margin:10px 0 8px; }
+  .tutorial-title { font-size:17px; font-weight:700; margin-bottom:6px; color:var(--green); }
+  .tutorial-text  { font-size:13px; color:var(--gray-dark); line-height:1.6; padding:0 8px; }
+  .tutorial-dots  { display:flex; justify-content:center; gap:7px; margin:16px 0 6px; }
+  .tutorial-dot   { width:8px; height:8px; border-radius:50%; background:#e0e0e0; transition:background 0.2s; cursor:pointer; }
+  .tutorial-dot.active { background:var(--green); }
+
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--gray-dark);
-    min-height: 100vh;
-    overflow-x: hidden;
+    font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:var(--bg); color:var(--gray-dark); min-height:100vh; overflow-x:hidden;
   }
 
   /* ── HEADER ── */
   header {
-    background: var(--green);
-    color: white;
-    padding: 14px 16px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow);
+    background:var(--green); color:white; padding:14px 16px 10px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100; box-shadow:var(--shadow);
   }
-  header h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.3px; }
-  header .subtitle { font-size: 11px; opacity: 0.8; margin-top: 1px; }
-  .header-actions { display: flex; gap: 8px; }
+  header h1 { font-size:18px; font-weight:700; letter-spacing:0.3px; }
+  header .subtitle { font-size:11px; opacity:0.8; margin-top:1px; }
+  .header-actions { display:flex; gap:6px; }
   .icon-btn {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    padding: 7px 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.15s;
+    background:rgba(255,255,255,0.2); border:none; border-radius:8px;
+    color:white; padding:7px 9px; font-size:15px; cursor:pointer; transition:background 0.15s;
   }
-  .icon-btn:active { background: rgba(255,255,255,0.35); }
+  .icon-btn:active { background:rgba(255,255,255,0.35); }
 
   /* ── TABS ── */
   .tabs {
-    display: flex;
-    background: white;
-    border-bottom: 2px solid #e0e0e0;
-    position: sticky;
-    top: 60px;
-    z-index: 99;
+    display:flex; background:white; border-bottom:2px solid #e0e0e0;
+    position:sticky; top:60px; z-index:99; overflow-x:auto;
   }
+  .tabs::-webkit-scrollbar { display:none; }
   .tab {
-    flex: 1;
-    padding: 11px 4px 9px;
-    text-align: center;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--gray);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-    user-select: none;
+    flex:1; min-width:52px; padding:10px 4px 8px; text-align:center;
+    font-size:11px; font-weight:600; color:var(--gray); cursor:pointer;
+    border-bottom:3px solid transparent; transition:all 0.2s; user-select:none;
   }
-  .tab.active { color: var(--green); border-bottom-color: var(--green); }
-  .tab-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+  .tab.active { color:var(--green); border-bottom-color:var(--green); }
+  .tab-icon { font-size:17px; display:block; margin-bottom:2px; }
 
   /* ── PAGES ── */
-  .page { display: none; padding: 12px; }
-  .page.active { display: block; }
+  .page { display:none; padding:12px; }
+  .page.active { display:block; }
 
   /* ── CARDS ── */
   .card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow);
+    background:white; border-radius:var(--radius); padding:14px;
+    margin-bottom:12px; box-shadow:var(--shadow);
   }
   .card-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size:13px; font-weight:700; color:var(--green);
+    margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px;
   }
 
   /* ── GRID PAGE ── */
-  .grid-controls {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .grid-controls label { font-size: 12px; color: var(--gray); }
+  .grid-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .grid-controls label { font-size:12px; color:var(--gray); }
   .grid-controls input[type=number] {
-    width: 52px;
-    padding: 5px 6px;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 7px;
-    font-size: 13px;
-    text-align: center;
+    width:52px; padding:5px 6px; border:1.5px solid #e0e0e0;
+    border-radius:7px; font-size:13px; text-align:center;
   }
   .btn {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
+    padding:8px 14px; border:none; border-radius:8px;
+    font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;
   }
-  .btn:active { transform: scale(0.96); }
-  .btn-primary { background: var(--green); color: white; }
-  .btn-danger  { background: var(--red);   color: white; }
-  .btn-warn    { background: var(--yellow); color: #333; }
-  .btn-outline {
-    background: transparent;
-    color: var(--green);
-    border: 1.5px solid var(--green);
-  }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn:active { transform:scale(0.96); }
+  .btn-primary { background:var(--green); color:white; }
+  .btn-danger  { background:var(--red);   color:white; }
+  .btn-warn    { background:var(--yellow); color:#333; }
+  .btn-outline { background:transparent; color:var(--green); border:1.5px solid var(--green); }
+  .btn-sm { padding:5px 10px; font-size:12px; }
 
   /* Plant selector */
-  .plant-selector {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
+  .plant-selector { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
   .plant-chip {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 10px;
-    border-radius: 20px;
-    background: var(--green-pale);
-    border: 2px solid transparent;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all 0.15s;
-    user-select: none;
+    display:flex; align-items:center; gap:4px; padding:6px 10px;
+    border-radius:20px; background:var(--green-pale); border:2px solid transparent;
+    cursor:pointer; font-size:13px; transition:all 0.15s; user-select:none;
   }
-  .plant-chip.selected {
-    border-color: var(--green);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(45,122,58,0.2);
-  }
-  .plant-chip.eraser {
-    background: #fce4ec;
-    border-color: #f48fb1;
-    color: var(--red);
-  }
-  .plant-chip.eraser.selected {
-    background: var(--red);
-    color: white;
-    border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(229,57,53,0.2);
-  }
-  .plant-chip-emoji { font-size: 20px; }
-  .plant-chip-name  { font-size: 11px; font-weight: 600; }
+  .plant-chip.selected { border-color:var(--green); background:white; box-shadow:0 0 0 3px rgba(45,122,58,0.2); }
+  .plant-chip.eraser { background:#fce4ec; border-color:#f48fb1; color:var(--red); }
+  .plant-chip.eraser.selected { background:var(--red); color:white; border-color:var(--red); box-shadow:0 0 0 3px rgba(229,57,53,0.2); }
+  .plant-chip-emoji { font-size:20px; }
+  .plant-chip-name  { font-size:11px; font-weight:600; }
 
   /* Grid wrapper */
   .grid-wrapper {
-    overflow: auto;
-    border-radius: 10px;
-    border: 1.5px solid #e0e0e0;
-    background: white;
-    position: relative;
-    max-height: 55vh;
+    overflow:auto; border-radius:10px; border:2px solid #3d1f0a;
+    background:#5c3317; position:relative; max-height:55vh;
   }
-  .grid-table {
-    border-collapse: collapse;
-    display: block;
-    white-space: nowrap;
-  }
+  .grid-table { border-collapse:collapse; display:block; white-space:nowrap; }
   .grid-table td {
-    width: var(--cell);
-    height: var(--cell);
-    min-width: var(--cell);
-    text-align: center;
-    vertical-align: middle;
-    border: 1px solid #eeeeee;
-    font-size: 22px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.1s;
-    position: relative;
+    width:var(--cell); height:var(--cell); min-width:var(--cell);
+    text-align:center; vertical-align:middle; border:1px solid #3d1f0a;
+    font-size:22px; cursor:pointer; user-select:none;
+    transition:background 0.1s; position:relative; background:#5c3317;
   }
-  .grid-table td:hover  { background: #f0f8f0; }
-  .grid-table td:active { background: #c8e6c9; }
-  .grid-table td.error  { background: var(--red-pale) !important; outline: 2px solid var(--red); outline-offset: -2px; }
+  .grid-table td:hover  { background:#7a4520; }
+  .grid-table td:active { background:#8b5a2b; }
+  .grid-table td.error  { background:var(--red-pale) !important; outline:2px solid var(--red); outline-offset:-2px; }
   .grid-table td.error::after {
-    content: '⚠';
-    position: absolute;
-    top: 1px; right: 2px;
-    font-size: 10px;
-    color: var(--red);
+    content:'⚠'; position:absolute; top:1px; right:2px; font-size:10px; color:var(--red);
   }
 
   /* Suggestion banner */
   .suggestion-banner {
-    display: none;
-    background: var(--yellow-pale);
-    border: 1.5px solid var(--yellow);
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 12px;
-    margin-bottom: 8px;
-    color: #5d4037;
+    display:none; background:var(--yellow-pale); border:1.5px solid var(--yellow);
+    border-radius:8px; padding:8px 12px; font-size:12px; margin-bottom:8px; color:#5d4037;
   }
-  .suggestion-banner.show { display: block; }
+  .suggestion-banner.show { display:block; }
 
   /* Stats bar */
-  .stats-bar {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 8px;
-  }
+  .stats-bar { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
   .stat-pill {
-    background: var(--green-pale);
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-size: 11px;
-    color: var(--green);
-    font-weight: 600;
+    background:var(--green-pale); border-radius:20px;
+    padding:4px 10px; font-size:11px; color:var(--green); font-weight:600;
   }
 
   /* ── PLANTS PAGE ── */
-  .plant-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .plant-item:last-child { border-bottom: none; }
-  .plant-emoji-big { font-size: 28px; width: 36px; text-align: center; }
-  .plant-info { flex: 1; }
-  .plant-info strong { font-size: 14px; display: block; }
-  .plant-info span   { font-size: 11px; color: var(--gray); }
-  .plant-actions { display: flex; gap: 6px; }
+  .plant-item { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid #f0f0f0; }
+  .plant-item:last-child { border-bottom:none; }
+  .plant-emoji-big { font-size:28px; width:36px; text-align:center; }
+  .plant-info { flex:1; }
+  .plant-info strong { font-size:14px; display:block; }
+  .plant-info span   { font-size:11px; color:var(--gray); }
+  .plant-actions { display:flex; gap:6px; }
 
-  /* Form add plant */
-  .form-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-  .form-group { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 80px; }
-  .form-group label { font-size: 11px; color: var(--gray); font-weight: 600; }
+  /* Form */
+  .form-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+  .form-group { display:flex; flex-direction:column; gap:4px; flex:1; min-width:80px; }
+  .form-group label { font-size:11px; color:var(--gray); font-weight:600; }
   .form-group input {
-    padding: 8px 10px;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    width: 100%;
+    padding:8px 10px; border:1.5px solid #e0e0e0; border-radius:8px; font-size:14px; width:100%;
   }
-  .form-group input:focus { outline: none; border-color: var(--green); }
+  .form-group input:focus { outline:none; border-color:var(--green); }
 
-  /* ── ASSOCIATIONS ── */
-  .assoc-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px;
-    border-radius: 8px;
-    margin-bottom: 6px;
-  }
-  .assoc-good { background: #e8f5e9; }
-  .assoc-warn { background: #fff3e0; }
-  .assoc-bad  { background: #ffebee; }
-  .assoc-icon { font-size: 20px; }
-  .assoc-text { font-size: 12px; flex: 1; }
-  .assoc-badge {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
-    text-transform: uppercase;
-  }
-  .badge-green  { background: var(--green);  color: white; }
-  .badge-yellow { background: var(--yellow); color: #333; }
-  .badge-red    { background: var(--red);    color: white; }
+  /* Associations */
+  .assoc-item { display:flex; align-items:center; gap:8px; padding:8px; border-radius:8px; margin-bottom:6px; }
+  .assoc-good { background:#e8f5e9; }
+  .assoc-warn { background:#fff3e0; }
+  .assoc-bad  { background:#ffebee; }
+  .assoc-icon { font-size:20px; }
+  .assoc-text { font-size:12px; flex:1; }
+  .assoc-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; text-transform:uppercase; }
+  .badge-green  { background:var(--green);  color:white; }
+  .badge-yellow { background:var(--yellow); color:#333; }
+  .badge-red    { background:var(--red);    color:white; }
 
-  /* ── SAVES PAGE ── */
+  /* Saves */
   .save-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border: 1.5px solid #e0e0e0;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    background: white;
-    transition: border-color 0.15s;
+    display:flex; align-items:center; gap:10px; padding:10px;
+    border:1.5px solid #e0e0e0; border-radius:10px; margin-bottom:8px;
+    cursor:pointer; background:white; transition:border-color 0.15s;
   }
-  .save-item:active { border-color: var(--green); }
-  .save-icon { font-size: 24px; }
-  .save-info { flex: 1; }
-  .save-info strong { font-size: 13px; display: block; }
-  .save-info span   { font-size: 11px; color: var(--gray); }
-  .save-btns { display: flex; gap: 5px; }
+  .save-item:active { border-color:var(--green); }
+  .save-icon { font-size:24px; }
+  .save-info { flex:1; }
+  .save-info strong { font-size:13px; display:block; }
+  .save-info span   { font-size:11px; color:var(--gray); }
+  .save-btns { display:flex; gap:5px; }
 
-  /* ── EXPORT PAGE ── */
+  /* Export */
   .export-preview {
-    background: #1a1a1a;
-    border-radius: 10px;
-    padding: 12px;
-    overflow: auto;
-    font-size: 11px;
-    color: #a5d6a7;
-    line-height: 1.6;
-    font-family: monospace;
-    max-height: 200px;
-    margin-bottom: 10px;
-    white-space: pre;
+    background:#1a1a1a; border-radius:10px; padding:12px; overflow:auto;
+    font-size:11px; color:#a5d6a7; line-height:1.6; font-family:monospace;
+    max-height:200px; margin-bottom:10px; white-space:pre;
   }
 
-  /* ── MODAL ── */
+  /* Modal */
   .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 200;
-    align-items: flex-end;
-    justify-content: center;
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    z-index:200; align-items:flex-end; justify-content:center;
   }
-  .modal-overlay.show { display: flex; }
+  .modal-overlay.show { display:flex; }
   .modal {
-    background: white;
-    border-radius: 20px 20px 0 0;
-    padding: 20px 16px 32px;
-    width: 100%;
-    max-width: 480px;
-    animation: slideUp 0.25s ease;
+    background:white; border-radius:20px 20px 0 0; padding:20px 16px 32px;
+    width:100%; max-width:480px; animation:slideUp 0.25s ease;
   }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .modal h3 { font-size: 16px; margin-bottom: 14px; }
-  .modal-close {
-    float: right;
-    background: none;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color: var(--gray);
-  }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal h3 { font-size:16px; margin-bottom:14px; }
+  .modal-close { float:right; background:none; border:none; font-size:22px; cursor:pointer; color:var(--gray); }
 
-  /* ── TOAST ── */
+  /* Toast */
   .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--gray-dark);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 13px;
-    z-index: 300;
-    transition: transform 0.3s ease;
-    white-space: nowrap;
+    position:fixed; bottom:20px; left:50%;
+    transform:translateX(-50%) translateY(80px);
+    background:var(--gray-dark); color:white; padding:10px 20px;
+    border-radius:20px; font-size:13px; z-index:300;
+    transition:transform 0.3s ease; white-space:nowrap;
   }
-  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.show { transform:translateX(-50%) translateY(0); }
 
-  /* ── CANVAS hidden ── */
-  #exportCanvas { display: none; }
+  #exportCanvas { display:none; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 360px) {
-    :root { --cell: 36px; }
-    .plant-chip-name { display: none; }
+  @media (max-width:360px) {
+    :root { --cell:36px; }
+    .plant-chip-name { display:none; }
   }
 </style>
 </head>
@@ -407,6 +260,8 @@
     <div class="subtitle" id="gridSizeLabel">Grilla 10×10 · 1m²</div>
   </div>
   <div class="header-actions">
+    <button class="icon-btn" id="btnUndo" onclick="undo()" title="Deshacer" disabled>↩️</button>
+    <button class="icon-btn" id="btnRedo" onclick="redo()" title="Rehacer" disabled>↪️</button>
     <button class="icon-btn" onclick="openConfigModal()" title="Configurar">⚙️</button>
     <button class="icon-btn" onclick="clearGrid()" title="Limpiar">🗑️</button>
   </div>
@@ -414,47 +269,52 @@
 
 <!-- TABS -->
 <nav class="tabs">
-  <div class="tab active" onclick="showTab('grid')">
-    <span class="tab-icon">🌿</span>Diseño
-  </div>
-  <div class="tab" onclick="showTab('plants')">
-    <span class="tab-icon">🪴</span>Plantas
-  </div>
-  <div class="tab" onclick="showTab('assoc')">
-    <span class="tab-icon">🤝</span>Asociaciones
-  </div>
-  <div class="tab" onclick="showTab('saves')">
-    <span class="tab-icon">💾</span>Guardados
-  </div>
-  <div class="tab" onclick="showTab('export')">
-    <span class="tab-icon">📤</span>Exportar
-  </div>
+  <div class="tab active" onclick="showTab('grid')"><span class="tab-icon">🌿</span>Diseño</div>
+  <div class="tab" onclick="showTab('plants')"><span class="tab-icon">🪴</span>Plantas</div>
+  <div class="tab" onclick="showTab('assoc')"><span class="tab-icon">🤝</span>Asociac.</div>
+  <div class="tab" onclick="showTab('saves')"><span class="tab-icon">💾</span>Guardados</div>
+  <div class="tab" onclick="showTab('export')"><span class="tab-icon">📤</span>Exportar</div>
+  <div class="tab" onclick="showTab('debug')"><span class="tab-icon">🔍</span>Debug</div>
 </nav>
 
-<!-- ════════════════ TAB: DISEÑO ════════════════ -->
+<!-- ════ TAB: DISEÑO ════ -->
 <div id="page-grid" class="page active">
 
   <div id="suggestionBanner" class="suggestion-banner">
     💡 <span id="suggestionText"></span>
   </div>
 
-  <!-- Plant selector -->
   <div class="card" style="padding:10px 14px;">
     <div class="card-title">Seleccionar planta</div>
     <div class="plant-selector" id="plantSelector"></div>
   </div>
 
-  <!-- Grid -->
   <div class="card" style="padding:10px;">
-    <div class="grid-wrapper" id="gridWrapper">
-      <table class="grid-table" id="gridTable"></table>
+    <!-- Zoom bar -->
+    <div class="zoom-bar">
+      <button class="zoom-btn" onclick="changeZoom(-1)">−</button>
+      <span class="zoom-label" id="zoomLabel">100%</span>
+      <button class="zoom-btn" onclick="changeZoom(+1)">+</button>
+      <span style="font-size:11px;color:var(--gray);margin-left:4px">Zoom</span>
     </div>
+
+    <!-- Column labels -->
+    <div class="col-labels" id="colLabels"></div>
+
+    <!-- Row labels + grid -->
+    <div class="grid-with-labels">
+      <div class="row-labels" id="rowLabels"></div>
+      <div class="grid-wrapper" id="gridWrapper">
+        <table class="grid-table" id="gridTable"></table>
+      </div>
+    </div>
+
     <div class="stats-bar" id="statsBar"></div>
   </div>
 
 </div>
 
-<!-- ════════════════ TAB: PLANTAS ════════════════ -->
+<!-- ════ TAB: PLANTAS ════ -->
 <div id="page-plants" class="page">
   <div class="card">
     <div class="card-title">Agregar planta</div>
@@ -474,62 +334,85 @@
     </div>
     <button class="btn btn-primary" onclick="addPlant()">+ Agregar</button>
   </div>
-
   <div class="card">
     <div class="card-title">Mis plantas</div>
     <div id="plantList"></div>
   </div>
 </div>
 
-<!-- ════════════════ TAB: ASOCIACIONES ════════════════ -->
+<!-- ════ TAB: ASOCIACIONES ════ -->
 <div id="page-assoc" class="page">
   <div class="card">
     <div class="card-title">Asociaciones conocidas</div>
     <div id="assocList"></div>
   </div>
   <div class="card">
-    <div class="card-title">Sugerencias para tu diseño actual</div>
+    <div class="card-title">Sugerencias para tu diseño</div>
     <div id="currentSuggestions"></div>
   </div>
 </div>
 
-<!-- ════════════════ TAB: GUARDADOS ════════════════ -->
+<!-- ════ TAB: GUARDADOS ════ -->
 <div id="page-saves" class="page">
   <div class="card">
     <div class="card-title">Guardar diseño actual</div>
     <div class="form-row">
       <div class="form-group">
-        <label>Nombre del diseño</label>
+        <label>Nombre</label>
         <input type="text" id="saveName" placeholder="Mi huerta primavera">
       </div>
     </div>
     <button class="btn btn-primary" onclick="saveDesign()">💾 Guardar</button>
   </div>
-
   <div class="card">
     <div class="card-title">Diseños guardados</div>
     <div id="savesList"></div>
   </div>
 </div>
 
-<!-- ════════════════ TAB: EXPORTAR ════════════════ -->
+<!-- ════ TAB: EXPORTAR ════ -->
 <div id="page-export" class="page">
   <div class="card">
-    <div class="card-title">Vista previa de texto</div>
+    <div class="card-title">Vista previa</div>
     <div class="export-preview" id="exportPreview"></div>
-    <div class="form-row" style="gap:8px; flex-wrap:wrap;">
+    <div class="form-row" style="gap:8px;flex-wrap:wrap;">
       <button class="btn btn-primary" onclick="exportText()">📋 Copiar texto</button>
       <button class="btn btn-outline" onclick="downloadText()">⬇️ Guardar .txt</button>
       <button class="btn btn-warn" onclick="exportPNG()">🖼️ Exportar PNG</button>
     </div>
   </div>
   <div class="card">
-    <div class="card-title">Información del diseño</div>
+    <div class="card-title">Información</div>
     <div id="exportInfo"></div>
   </div>
 </div>
 
-<!-- ════════════════ MODAL: CONFIG GRILLA ════════════════ -->
+<!-- ════ TAB: DEBUG ════ -->
+<div id="page-debug" class="page">
+  <div class="card">
+    <div class="card-title">🔍 Estado del diseño</div>
+    <div id="debugGrid"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💡 Recomendaciones</div>
+    <div id="debugRecommendations"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">⚠️ Conflictos de distancia</div>
+    <div id="debugConflicts"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📊 Uso del espacio</div>
+    <div id="debugSpace"></div>
+  </div>
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">🗄️ Almacenamiento local</div>
+    <div id="debugStorage"></div>
+    <button class="btn btn-danger btn-sm" style="margin-top:10px" onclick="clearStorage()">🗑️ Borrar todo el almacenamiento</button>
+  </div>
+</div>
+
+<!-- MODAL: Config grilla -->
 <div class="modal-overlay" id="configModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('configModal')">✕</button>
@@ -544,47 +427,90 @@
         <input type="number" id="cfgRows" min="3" max="40" value="10">
       </div>
     </div>
-    <p style="font-size:11px; color:var(--gray); margin-bottom:12px;">
-      Cada celda = 10×10 cm · El contenido actual se conservará si cabe
-    </p>
+    <p style="font-size:11px;color:var(--gray);margin-bottom:12px;">Cada celda = 10×10 cm · El contenido se conservará si cabe</p>
     <button class="btn btn-primary" style="width:100%" onclick="applyConfig()">✅ Aplicar</button>
   </div>
 </div>
 
-<!-- CANVAS FOR PNG -->
-<canvas id="exportCanvas"></canvas>
+<!-- MODAL: Tutorial -->
+<div class="modal-overlay" id="tutorialModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTutorial()">✕</button>
+    <div id="tutSlide0" class="tutorial-slide active">
+      <div class="tutorial-emoji">🌱</div>
+      <div class="tutorial-title">¡Bienvenido a Huerta Emoji!</div>
+      <div class="tutorial-text">Diseñá tu cantero de huerta de forma visual, eligiendo plantas y ubicándolas en la grilla.</div>
+    </div>
+    <div id="tutSlide1" class="tutorial-slide">
+      <div class="tutorial-emoji">🪴</div>
+      <div class="tutorial-title">Seleccioná una planta</div>
+      <div class="tutorial-text">Tocá cualquier chip de planta en la fila de arriba. También podés usar 🧹 para borrar celdas individuales.</div>
+    </div>
+    <div id="tutSlide2" class="tutorial-slide">
+      <div class="tutorial-emoji">👆</div>
+      <div class="tutorial-title">Tocá o arrastrá en la grilla</div>
+      <div class="tutorial-text">Tocá una celda para plantar. Arrastrá el dedo para pintar varias celdas a la vez. La grilla simula el suelo de tu huerta.</div>
+    </div>
+    <div id="tutSlide3" class="tutorial-slide">
+      <div class="tutorial-emoji">⚠️</div>
+      <div class="tutorial-title">Validación automática</div>
+      <div class="tutorial-text">Si dos plantas iguales están demasiado cerca, la celda se marca en rojo. Cada planta tiene una distancia mínima recomendada.</div>
+    </div>
+    <div id="tutSlide4" class="tutorial-slide">
+      <div class="tutorial-emoji">↩️</div>
+      <div class="tutorial-title">Deshacer y rehacer</div>
+      <div class="tutorial-text">Usá los botones ↩️ ↪️ en el header para deshacer o rehacer hasta 30 acciones. También podés usar ⚙️ para cambiar el tamaño de la grilla.</div>
+    </div>
+    <div id="tutSlide5" class="tutorial-slide">
+      <div class="tutorial-emoji">💾</div>
+      <div class="tutorial-title">Guardá tu diseño</div>
+      <div class="tutorial-text">En la pestaña Guardados podés guardar múltiples diseños y cargarlos después. En Exportar podés generar un PNG o texto con emojis.</div>
+    </div>
+    <div class="tutorial-dots" id="tutDots"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn btn-outline" style="flex:1" onclick="tutPrev()">← Anterior</button>
+      <button class="btn btn-primary" style="flex:1" id="tutNextBtn" onclick="tutNext()">Siguiente →</button>
+    </div>
+  </div>
+</div>
 
-<!-- TOAST -->
+<canvas id="exportCanvas"></canvas>
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  STATE
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 let COLS = 10, ROWS = 10;
-let grid = []; // grid[row][col] = plantId or null
+let cellSize = 42; // current zoom px
+let grid = [];
 
 let plants = [
-  { id: 'lechuga',   emoji: '🥬', name: 'Lechuga',   dist: 30 },
-  { id: 'tomate',    emoji: '🍅', name: 'Tomate',     dist: 50 },
-  { id: 'zanahoria', emoji: '🥕', name: 'Zanahoria',  dist: 10 },
-  { id: 'albahaca',  emoji: '🌿', name: 'Albahaca',   dist: 20 },
+  { id:'lechuga',   emoji:'🥬', name:'Lechuga',   dist:30 },
+  { id:'tomate',    emoji:'🍅', name:'Tomate',     dist:50 },
+  { id:'zanahoria', emoji:'🥕', name:'Zanahoria',  dist:10 },
+  { id:'albahaca',  emoji:'🌿', name:'Albahaca',   dist:20 },
 ];
 
 const ASSOCIATIONS = [
-  { a: 'tomate',    b: 'albahaca',  type: 'good', note: 'Tomate + Albahaca se protegen mutuamente. ¡Excelente combinación!' },
-  { a: 'zanahoria', b: 'lechuga',   type: 'good', note: 'Zanahoria + Lechuga se complementan bien en espacio.' },
-  { a: 'zanahoria', b: 'tomate',    type: 'good', note: 'Zanahoria + Tomate son buenos vecinos.' },
-  { a: 'zanahoria', b: 'albahaca',  type: 'good', note: 'Zanahoria tolera bien la albahaca.' },
-  { a: 'tomate',    b: 'tomate',    type: 'warn', note: 'Plantar muchos tomates juntos favorece plagas.' },
+  { a:'tomate',    b:'albahaca',  type:'good', note:'Tomate + Albahaca se protegen mutuamente. ¡Excelente combinación!' },
+  { a:'zanahoria', b:'lechuga',   type:'good', note:'Zanahoria + Lechuga se complementan bien en espacio.' },
+  { a:'zanahoria', b:'tomate',    type:'good', note:'Zanahoria + Tomate son buenos vecinos.' },
+  { a:'zanahoria', b:'albahaca',  type:'good', note:'Zanahoria tolera bien la albahaca.' },
+  { a:'tomate',    b:'tomate',    type:'warn', note:'Plantar muchos tomates juntos favorece plagas.' },
 ];
 
-let selectedPlant = null; // id or 'eraser'
-let errors = new Set();   // "row,col"
+let selectedPlant = null;
+let errors = new Set();
 
-// ════════════════════════════════════════════════
+// ── Undo/Redo history ──
+let history = [];
+let historyIndex = -1;
+const MAX_HISTORY = 30;
+
+// ══════════════════════════════════════════
 //  INIT
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function init() {
   loadState();
   buildGrid();
@@ -594,18 +520,114 @@ function init() {
   renderSaves();
   updateExportPreview();
   updateStats();
+  // Show tutorial on first launch
+  if (!localStorage.getItem('huerta_tutorial_done')) {
+    setTimeout(() => openTutorial(), 600);
+  }
 }
 
-// ════════════════════════════════════════════════
-//  GRID
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  ZOOM
+// ══════════════════════════════════════════
+const ZOOM_STEPS = [28, 34, 42, 52, 62];
+let zoomIndex = 2; // default = 42px
+
+function changeZoom(dir) {
+  zoomIndex = Math.min(ZOOM_STEPS.length - 1, Math.max(0, zoomIndex + dir));
+  cellSize = ZOOM_STEPS[zoomIndex];
+  document.getElementById('zoomLabel').textContent =
+    Math.round((cellSize / 42) * 100) + '%';
+  applyZoom();
+}
+
+function applyZoom() {
+  const pct = Math.round((cellSize / 42) * 100);
+  document.getElementById('zoomLabel').textContent = pct + '%';
+  // Update CSS variable for cell size
+  document.querySelectorAll('#gridTable td').forEach(td => {
+    td.style.width  = cellSize + 'px';
+    td.style.height = cellSize + 'px';
+    td.style.minWidth = cellSize + 'px';
+    td.style.fontSize = Math.round(cellSize * 0.55) + 'px';
+  });
+  renderLabels();
+}
+
+// ══════════════════════════════════════════
+//  GRID LABELS
+// ══════════════════════════════════════════
+function renderLabels() {
+  const colEl = document.getElementById('colLabels');
+  const rowEl = document.getElementById('rowLabels');
+  colEl.innerHTML = '';
+  rowEl.innerHTML = '';
+  for (let c = 0; c < COLS; c++) {
+    const d = document.createElement('div');
+    d.className = 'col-label';
+    d.style.width = cellSize + 'px';
+    d.textContent = c + 1;
+    colEl.appendChild(d);
+  }
+  for (let r = 0; r < ROWS; r++) {
+    const d = document.createElement('div');
+    d.className = 'row-label';
+    d.style.height = cellSize + 'px';
+    d.textContent = r + 1;
+    rowEl.appendChild(d);
+  }
+}
+
+// ══════════════════════════════════════════
+//  UNDO / REDO
+// ══════════════════════════════════════════
+function pushHistory() {
+  // Truncate future if we branched
+  history = history.slice(0, historyIndex + 1);
+  history.push(grid.map(r => [...r]));
+  if (history.length > MAX_HISTORY) history.shift();
+  historyIndex = history.length - 1;
+  updateUndoRedo();
+}
+
+function undo() {
+  if (historyIndex <= 0) return;
+  historyIndex--;
+  grid = history[historyIndex].map(r => [...r]);
+  renderGrid();
+  updateUndoRedo();
+  saveState();
+  toast('Deshacer ↩️');
+}
+
+function redo() {
+  if (historyIndex >= history.length - 1) return;
+  historyIndex++;
+  grid = history[historyIndex].map(r => [...r]);
+  renderGrid();
+  updateUndoRedo();
+  saveState();
+  toast('Rehacer ↪️');
+}
+
+function updateUndoRedo() {
+  document.getElementById('btnUndo').disabled = historyIndex <= 0;
+  document.getElementById('btnRedo').disabled = historyIndex >= history.length - 1;
+}
+
+// ══════════════════════════════════════════
+//  GRID BUILD & RENDER
+// ══════════════════════════════════════════
 function buildGrid(keepData) {
   const oldGrid = keepData ? grid.map(r => [...r]) : null;
-  grid = Array.from({length: ROWS}, (_, r) =>
-    Array.from({length: COLS}, (_, c) =>
+  grid = Array.from({length:ROWS}, (_, r) =>
+    Array.from({length:COLS}, (_, c) =>
       oldGrid && r < oldGrid.length && c < oldGrid[0].length ? oldGrid[r][c] : null
     )
   );
+  // Seed history
+  history = [grid.map(r => [...r])];
+  historyIndex = 0;
+  updateUndoRedo();
   renderGrid();
   updateHeaderLabel();
 }
@@ -620,15 +642,21 @@ function renderGrid() {
     for (let c = 0; c < COLS; c++) {
       const td = document.createElement('td');
       const pid = grid[r][c];
-      td.textContent = pid ? getPlant(pid)?.emoji ?? '⬜' : '⬜';
+      td.textContent = pid ? getPlant(pid)?.emoji ?? '🟫' : '·';
+      td.style.color  = pid ? '' : '#8b5a2b';
+      td.style.width  = cellSize + 'px';
+      td.style.height = cellSize + 'px';
+      td.style.minWidth = cellSize + 'px';
+      td.style.fontSize = Math.round(cellSize * 0.55) + 'px';
       td.dataset.r = r;
       td.dataset.c = c;
       td.addEventListener('click', onCellClick);
-      td.addEventListener('touchmove', onTouchMove, { passive: true });
+      td.addEventListener('touchmove', onTouchMove, { passive:true });
       tr.appendChild(td);
     }
     table.appendChild(tr);
   }
+  renderLabels();
   validateAll();
   updateExportPreview();
   updateStats();
@@ -653,15 +681,21 @@ function onTouchMove(e) {
 
 function placeOnCell(r, c) {
   if (!selectedPlant) { toast('Seleccioná una planta primero'); return; }
-  if (selectedPlant === 'eraser') {
-    grid[r][c] = null;
-  } else {
-    grid[r][c] = selectedPlant;
-  }
+  const before = grid[r][c];
+  if (selectedPlant === 'eraser') { grid[r][c] = null; }
+  else { grid[r][c] = selectedPlant; }
+  if (grid[r][c] === before) return; // no change, skip history
+
+  // Vibration
+  if (navigator.vibrate) navigator.vibrate(18);
+
+  pushHistory();
+
   const td = document.querySelector(`#gridTable td[data-r="${r}"][data-c="${c}"]`);
   if (td) {
     const pid = grid[r][c];
-    td.textContent = pid ? getPlant(pid)?.emoji ?? '⬜' : '⬜';
+    td.textContent = pid ? getPlant(pid)?.emoji ?? '🟫' : '·';
+    td.style.color  = pid ? '' : '#8b5a2b';
     td.classList.remove('error');
   }
   validateAll();
@@ -673,15 +707,16 @@ function placeOnCell(r, c) {
 
 function clearGrid() {
   if (!confirm('¿Limpiar toda la grilla?')) return;
-  grid = Array.from({length: ROWS}, () => Array(COLS).fill(null));
+  grid = Array.from({length:ROWS}, () => Array(COLS).fill(null));
+  pushHistory();
   renderGrid();
   saveState();
   toast('Grilla limpiada 🗑️');
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  VALIDATION
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function validateAll() {
   errors.clear();
   const cells = document.querySelectorAll('#gridTable td');
@@ -694,14 +729,13 @@ function validateAll() {
       const plant = getPlant(pid);
       if (!plant) continue;
       const minCells = Math.ceil(plant.dist / 10);
-
       for (let dr = -minCells; dr <= minCells; dr++) {
         for (let dc = -minCells; dc <= minCells; dc++) {
           if (dr === 0 && dc === 0) continue;
-          const nr = r + dr, nc = c + dc;
-          if (nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS) continue;
+          const nr = r+dr, nc = c+dc;
+          if (nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
           if (grid[nr][nc] === pid) {
-            const dist = Math.sqrt(dr*dr + dc*dc) * 10; // cm
+            const dist = Math.sqrt(dr*dr+dc*dc)*10;
             if (dist < plant.dist) {
               errors.add(`${r},${c}`);
               errors.add(`${nr},${nc}`);
@@ -711,17 +745,16 @@ function validateAll() {
       }
     }
   }
-
   errors.forEach(key => {
-    const [r, c] = key.split(',');
+    const [r,c] = key.split(',');
     const td = document.querySelector(`#gridTable td[data-r="${r}"][data-c="${c}"]`);
     if (td) td.classList.add('error');
   });
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  SUGGESTIONS
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function checkSuggestions() {
   const banner = document.getElementById('suggestionBanner');
   const text   = document.getElementById('suggestionText');
@@ -744,53 +777,41 @@ function checkSuggestions() {
     }
   });
 
-  if (suggestions.length) {
-    text.textContent = suggestions[0];
-    banner.classList.add('show');
-  } else {
-    banner.classList.remove('show');
-  }
-
+  if (suggestions.length) { text.textContent = suggestions[0]; banner.classList.add('show'); }
+  else { banner.classList.remove('show'); }
   renderCurrentSuggestions(present);
 }
 
 function renderCurrentSuggestions(present) {
   const el = document.getElementById('currentSuggestions');
   if (!present) present = new Set(grid.flat().filter(Boolean));
-  const items = [];
-
   if (present.size === 0) {
     el.innerHTML = '<p style="color:var(--gray);font-size:13px;">Agregá plantas a tu diseño para ver sugerencias.</p>';
     return;
   }
-
+  const items = [];
   ASSOCIATIONS.forEach(a => {
     const pa = getPlant(a.a), pb = getPlant(a.b);
     if (!pa || !pb) return;
     if (present.has(a.a) || present.has(a.b)) {
-      const icon = a.type === 'good' ? '✅' : a.type === 'warn' ? '⚠️' : '❌';
-      const cls  = a.type === 'good' ? 'assoc-good' : a.type === 'warn' ? 'assoc-warn' : 'assoc-bad';
-      const badge = a.type === 'good' ? 'badge-green' : a.type === 'warn' ? 'badge-yellow' : 'badge-red';
-      const label = a.type === 'good' ? 'Recomendado' : a.type === 'warn' ? 'Atención' : 'Evitar';
-      items.push(`
-        <div class="assoc-item ${cls}">
-          <span class="assoc-icon">${icon}</span>
-          <div class="assoc-text">
-            <strong>${pa.emoji} ${pa.name} + ${pb.emoji} ${pb.name}</strong><br>
-            <span style="font-size:11px">${a.note}</span>
-          </div>
-          <span class="assoc-badge ${badge}">${label}</span>
-        </div>
-      `);
+      const icon  = a.type==='good'?'✅':a.type==='warn'?'⚠️':'❌';
+      const cls   = a.type==='good'?'assoc-good':a.type==='warn'?'assoc-warn':'assoc-bad';
+      const badge = a.type==='good'?'badge-green':a.type==='warn'?'badge-yellow':'badge-red';
+      const label = a.type==='good'?'Recomendado':a.type==='warn'?'Atención':'Evitar';
+      items.push(`<div class="assoc-item ${cls}">
+        <span class="assoc-icon">${icon}</span>
+        <div class="assoc-text"><strong>${pa.emoji} ${pa.name} + ${pb.emoji} ${pb.name}</strong><br>
+        <span style="font-size:11px">${a.note}</span></div>
+        <span class="assoc-badge ${badge}">${label}</span>
+      </div>`);
     }
   });
-
   el.innerHTML = items.length ? items.join('') : '<p style="color:var(--gray);font-size:13px;">No hay asociaciones conocidas para tus plantas actuales.</p>';
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  PLANT SELECTOR
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function renderPlantSelector() {
   const el = document.getElementById('plantSelector');
   el.innerHTML = plants.map(p => `
@@ -812,9 +833,9 @@ function selectPlant(id) {
   document.getElementById('chip-' + id)?.classList.add('selected');
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  PLANT LIST
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function renderPlantList() {
   const el = document.getElementById('plantList');
   el.innerHTML = plants.map(p => `
@@ -842,10 +863,7 @@ function addPlant() {
   document.getElementById('newEmoji').value = '';
   document.getElementById('newName').value  = '';
   document.getElementById('newDist').value  = '';
-  renderPlantList();
-  renderPlantSelector();
-  renderAssociations();
-  saveState();
+  renderPlantList(); renderPlantSelector(); renderAssociations(); saveState();
   toast(`${emoji} ${name} agregada ✅`);
 }
 
@@ -856,33 +874,24 @@ function deletePlant(id) {
     for (let c = 0; c < COLS; c++)
       if (grid[r][c] === id) grid[r][c] = null;
   if (selectedPlant === id) selectedPlant = null;
-  renderGrid();
-  renderPlantList();
-  renderPlantSelector();
-  saveState();
+  renderGrid(); renderPlantList(); renderPlantSelector(); saveState();
   toast('Planta eliminada');
 }
 
 function editPlant(id) {
   const p = getPlant(id);
   if (!p) return;
-  const newEmoji = prompt('Emoji:', p.emoji);
-  if (!newEmoji) return;
-  const newName = prompt('Nombre:', p.name);
-  if (!newName) return;
-  const newDist = parseInt(prompt('Distancia mínima (cm):', p.dist));
-  if (!newDist) return;
+  const newEmoji = prompt('Emoji:', p.emoji); if (!newEmoji) return;
+  const newName  = prompt('Nombre:', p.name);  if (!newName)  return;
+  const newDist  = parseInt(prompt('Distancia mínima (cm):', p.dist)); if (!newDist) return;
   p.emoji = newEmoji; p.name = newName; p.dist = newDist;
-  renderGrid();
-  renderPlantList();
-  renderPlantSelector();
-  saveState();
+  renderGrid(); renderPlantList(); renderPlantSelector(); saveState();
   toast('Planta actualizada ✅');
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  ASSOCIATIONS
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function renderAssociations() {
   const el = document.getElementById('assocList');
   el.innerHTML = ASSOCIATIONS.map(a => {
@@ -892,54 +901,40 @@ function renderAssociations() {
     const cls   = a.type==='good'?'assoc-good':a.type==='warn'?'assoc-warn':'assoc-bad';
     const badge = a.type==='good'?'badge-green':a.type==='warn'?'badge-yellow':'badge-red';
     const label = a.type==='good'?'Recomendado':a.type==='warn'?'Atención':'Evitar';
-    return `
-      <div class="assoc-item ${cls}">
-        <span class="assoc-icon">${icon}</span>
-        <div class="assoc-text">
-          <strong>${pa.emoji} ${pa.name} + ${pb.emoji} ${pb.name}</strong><br>
-          <span style="font-size:11px">${a.note}</span>
-        </div>
-        <span class="assoc-badge ${badge}">${label}</span>
-      </div>
-    `;
+    return `<div class="assoc-item ${cls}">
+      <span class="assoc-icon">${icon}</span>
+      <div class="assoc-text"><strong>${pa.emoji} ${pa.name} + ${pb.emoji} ${pb.name}</strong><br>
+      <span style="font-size:11px">${a.note}</span></div>
+      <span class="assoc-badge ${badge}">${label}</span>
+    </div>`;
   }).join('');
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  STATS
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function updateStats() {
   const el = document.getElementById('statsBar');
   const counts = {};
   grid.flat().forEach(pid => { if (pid) counts[pid] = (counts[pid]||0)+1; });
   const total = Object.values(counts).reduce((a,b)=>a+b,0);
-  const pills = Object.entries(counts).map(([pid, n]) => {
+  const pills = Object.entries(counts).map(([pid,n]) => {
     const p = getPlant(pid);
     return p ? `<span class="stat-pill">${p.emoji} ${n}</span>` : '';
   }).join('');
   el.innerHTML = `<span class="stat-pill">🌱 ${total} plantas</span>${pills}${errors.size?`<span class="stat-pill" style="background:#ffebee;color:var(--red)">⚠️ ${errors.size/2|0} conflictos</span>`:''}`;
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  SAVES
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function saveDesign() {
   const name = document.getElementById('saveName').value.trim() || 'Sin nombre';
   const saves = getSaves();
-  const entry = {
-    id: Date.now().toString(),
-    name,
-    date: new Date().toLocaleDateString('es-AR'),
-    cols: COLS,
-    rows: ROWS,
-    grid: grid.map(r => [...r]),
-    plants: JSON.parse(JSON.stringify(plants)),
-  };
-  saves.unshift(entry);
+  saves.unshift({ id:Date.now().toString(), name, date:new Date().toLocaleDateString('es-AR'), cols:COLS, rows:ROWS, grid:grid.map(r=>[...r]), plants:JSON.parse(JSON.stringify(plants)) });
   localStorage.setItem('huerta_saves', JSON.stringify(saves));
   document.getElementById('saveName').value = '';
-  renderSaves();
-  toast(`"${name}" guardado 💾`);
+  renderSaves(); toast(`"${name}" guardado 💾`);
 }
 
 function getSaves() {
@@ -949,17 +944,11 @@ function getSaves() {
 function renderSaves() {
   const el = document.getElementById('savesList');
   const saves = getSaves();
-  if (!saves.length) {
-    el.innerHTML = '<p style="color:var(--gray);font-size:13px;">No hay diseños guardados aún.</p>';
-    return;
-  }
+  if (!saves.length) { el.innerHTML = '<p style="color:var(--gray);font-size:13px;">No hay diseños guardados aún.</p>'; return; }
   el.innerHTML = saves.map(s => `
     <div class="save-item">
       <span class="save-icon">🌾</span>
-      <div class="save-info">
-        <strong>${s.name}</strong>
-        <span>${s.date} · ${s.cols}×${s.rows}</span>
-      </div>
+      <div class="save-info"><strong>${s.name}</strong><span>${s.date} · ${s.cols}×${s.rows}</span></div>
       <div class="save-btns">
         <button class="btn btn-primary btn-sm" onclick="loadDesign('${s.id}')">📂</button>
         <button class="btn btn-danger btn-sm" onclick="deleteDesign('${s.id}')">✕</button>
@@ -969,35 +958,24 @@ function renderSaves() {
 }
 
 function loadDesign(id) {
-  const saves = getSaves();
-  const s = saves.find(x => x.id === id);
+  const s = getSaves().find(x => x.id === id);
   if (!s) return;
   if (!confirm(`¿Cargar "${s.name}"? El diseño actual se perderá.`)) return;
-  COLS = s.cols; ROWS = s.rows;
-  grid = s.grid;
-  plants = s.plants;
-  selectedPlant = null;
-  renderGrid();
-  renderPlantList();
-  renderPlantSelector();
-  showTab('grid');
+  COLS = s.cols; ROWS = s.rows; grid = s.grid; plants = s.plants; selectedPlant = null;
+  renderGrid(); renderPlantList(); renderPlantSelector(); showTab('grid');
   toast(`"${s.name}" cargado ✅`);
 }
 
 function deleteDesign(id) {
-  let saves = getSaves().filter(s => s.id !== id);
-  localStorage.setItem('huerta_saves', JSON.stringify(saves));
-  renderSaves();
-  toast('Diseño eliminado');
+  localStorage.setItem('huerta_saves', JSON.stringify(getSaves().filter(s => s.id !== id)));
+  renderSaves(); toast('Diseño eliminado');
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  EXPORT
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function getTextGrid() {
-  return grid.map(row =>
-    row.map(pid => pid ? (getPlant(pid)?.emoji ?? '⬜') : '⬜').join('')
-  ).join('\n');
+  return grid.map(row => row.map(pid => pid ? (getPlant(pid)?.emoji ?? '🟫') : '⬜').join('')).join('\n');
 }
 
 function updateExportPreview() {
@@ -1005,95 +983,59 @@ function updateExportPreview() {
   const info = document.getElementById('exportInfo');
   if (!el || !info) return;
   el.textContent = getTextGrid();
-
   const counts = {};
   grid.flat().forEach(pid => { if (pid) counts[pid] = (counts[pid]||0)+1; });
-  const lines = Object.entries(counts).map(([pid, n]) => {
+  const lines = Object.entries(counts).map(([pid,n]) => {
     const p = getPlant(pid);
-    return p ? `<div style="font-size:13px;margin-bottom:4px">${p.emoji} <strong>${p.name}</strong>: ${n} plantas · ${n*p.dist} cm min. entre ellas</div>` : '';
+    return p ? `<div style="font-size:13px;margin-bottom:4px">${p.emoji} <strong>${p.name}</strong>: ${n} plantas</div>` : '';
   }).join('');
-  info.innerHTML = `
-    <div style="font-size:12px;color:var(--gray);margin-bottom:8px">Grilla: ${COLS}×${ROWS} (${COLS*10}×${ROWS*10} cm)</div>
-    ${lines || '<span style="color:var(--gray);font-size:13px">Sin plantas.</span>'}
-    ${errors.size ? `<div style="color:var(--red);font-size:12px;margin-top:6px">⚠️ ${errors.size/2|0} conflicto(s) de distancia detectados</div>` : ''}
-  `;
+  info.innerHTML = `<div style="font-size:12px;color:var(--gray);margin-bottom:8px">Grilla: ${COLS}×${ROWS} (${COLS*10}×${ROWS*10} cm)</div>${lines||'<span style="color:var(--gray);font-size:13px">Sin plantas.</span>'}${errors.size?`<div style="color:var(--red);font-size:12px;margin-top:6px">⚠️ ${errors.size/2|0} conflicto(s) detectados</div>`:''}`;
 }
 
 function exportText() {
   const text = getTextGrid();
-  if (navigator.clipboard?.writeText) {
-    navigator.clipboard.writeText(text).then(() => toast('Texto copiado 📋'));
-  } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    toast('Texto copiado 📋');
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(() => toast('Texto copiado 📋'));
+  else {
+    const ta = document.createElement('textarea'); ta.value = text;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); toast('Texto copiado 📋');
   }
 }
 
 function downloadText() {
   const text = `🌱 HUERTA EMOJI\n${'─'.repeat(COLS+2)}\n${getTextGrid()}\n${'─'.repeat(COLS+2)}\nGrilla: ${COLS}×${ROWS} (${COLS*10}×${ROWS*10}cm)\nGenerado: ${new Date().toLocaleString('es-AR')}`;
-  const blob = new Blob([text], { type: 'text/plain' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'huerta.txt';
-  a.click();
-  toast('Archivo descargado ⬇️');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
+  a.download = 'huerta.txt'; a.click(); toast('Archivo descargado ⬇️');
 }
 
 function exportPNG() {
   const canvas = document.getElementById('exportCanvas');
-  const CELL = 48, PAD = 20, FONT = 28;
-  const W = COLS * CELL + PAD*2;
-  const H = ROWS * CELL + PAD*2 + 40;
-  canvas.width = W; canvas.height = H;
+  const CELL=48, PAD=20, FONT=28;
+  canvas.width = COLS*CELL+PAD*2; canvas.height = ROWS*CELL+PAD*2+40;
   const ctx = canvas.getContext('2d');
-
-  // Background
-  ctx.fillStyle = '#f1f8e9';
-  ctx.fillRect(0, 0, W, H);
-
-  // Title
-  ctx.fillStyle = '#2d7a3a';
-  ctx.font = 'bold 16px sans-serif';
-  ctx.fillText('🌱 Huerta Emoji', PAD, PAD + 14);
-
-  // Grid
+  ctx.fillStyle = '#f1f8e9'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#2d7a3a'; ctx.font = 'bold 16px sans-serif';
+  ctx.fillText('🌱 Huerta Emoji', PAD, PAD+14);
   ctx.font = `${FONT}px sans-serif`;
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      const x = PAD + c * CELL;
-      const y = PAD + 40 + r * CELL;
-
-      // cell bg
-      const pid = grid[r][c];
-      ctx.fillStyle = errors.has(`${r},${c}`) ? '#ffebee' : '#ffffff';
-      ctx.fillRect(x, y, CELL, CELL);
-      ctx.strokeStyle = '#e0e0e0';
-      ctx.strokeRect(x, y, CELL, CELL);
-
-      // emoji
-      const emoji = pid ? getPlant(pid)?.emoji ?? '⬜' : '⬜';
-      ctx.fillText(emoji, x + (CELL - FONT)/2 - 2, y + CELL - (CELL - FONT)/2);
-    }
+  for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++) {
+    const x=PAD+c*CELL, y=PAD+40+r*CELL, pid=grid[r][c];
+    ctx.fillStyle = errors.has(`${r},${c}`) ? '#7a1515' : '#5c3317';
+    ctx.fillRect(x,y,CELL,CELL);
+    ctx.strokeStyle='#3d1f0a'; ctx.strokeRect(x,y,CELL,CELL);
+    const emoji = pid ? getPlant(pid)?.emoji ?? '' : '';
+    if (emoji) ctx.fillText(emoji, x+(CELL-FONT)/2-2, y+CELL-(CELL-FONT)/2);
   }
-
-  // Download
   canvas.toBlob(blob => {
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'huerta.png';
-    a.click();
+    a.href = URL.createObjectURL(blob); a.download = 'huerta.png'; a.click();
     toast('PNG exportado 🖼️');
   });
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  CONFIG MODAL
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function openConfigModal() {
   document.getElementById('cfgCols').value = COLS;
   document.getElementById('cfgRows').value = ROWS;
@@ -1101,44 +1043,84 @@ function openConfigModal() {
 }
 
 function applyConfig() {
-  const c = Math.min(30, Math.max(3, parseInt(document.getElementById('cfgCols').value)||10));
-  const r = Math.min(40, Math.max(3, parseInt(document.getElementById('cfgRows').value)||10));
-  COLS = c; ROWS = r;
-  buildGrid(true);
-  closeModal('configModal');
-  saveState();
+  const c = Math.min(30,Math.max(3,parseInt(document.getElementById('cfgCols').value)||10));
+  const r = Math.min(40,Math.max(3,parseInt(document.getElementById('cfgRows').value)||10));
+  COLS=c; ROWS=r; buildGrid(true); closeModal('configModal'); saveState();
   toast(`Grilla ${COLS}×${ROWS} aplicada ✅`);
 }
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
-}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 
 function updateHeaderLabel() {
-  const area = ((COLS * ROWS * 100) / 10000).toFixed(1);
+  const area = ((COLS*ROWS*100)/10000).toFixed(1);
   document.getElementById('gridSizeLabel').textContent = `Grilla ${COLS}×${ROWS} · ${area}m²`;
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  TUTORIAL
+// ══════════════════════════════════════════
+let tutPage = 0;
+const TUT_TOTAL = 6;
+
+function openTutorial() {
+  tutPage = 0;
+  renderTutorial();
+  document.getElementById('tutorialModal').classList.add('show');
+}
+
+function closeTutorial() {
+  document.getElementById('tutorialModal').classList.remove('show');
+  localStorage.setItem('huerta_tutorial_done', '1');
+}
+
+function tutNext() {
+  if (tutPage >= TUT_TOTAL - 1) { closeTutorial(); return; }
+  tutPage++;
+  renderTutorial();
+}
+
+function tutPrev() {
+  if (tutPage <= 0) return;
+  tutPage--;
+  renderTutorial();
+}
+
+function renderTutorial() {
+  for (let i=0;i<TUT_TOTAL;i++) {
+    const s = document.getElementById('tutSlide'+i);
+    if (s) s.className = 'tutorial-slide' + (i===tutPage?' active':'');
+  }
+  // Dots
+  const dotsEl = document.getElementById('tutDots');
+  dotsEl.innerHTML = '';
+  for (let i=0;i<TUT_TOTAL;i++) {
+    const d = document.createElement('div');
+    d.className = 'tutorial-dot' + (i===tutPage?' active':'');
+    d.onclick = () => { tutPage=i; renderTutorial(); };
+    dotsEl.appendChild(d);
+  }
+  document.getElementById('tutNextBtn').textContent = tutPage>=TUT_TOTAL-1 ? '¡Empezar! 🌱' : 'Siguiente →';
+}
+
+// ══════════════════════════════════════════
 //  TABS
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function showTab(tab) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-  const tabs = ['grid','plants','assoc','saves','export'];
+  document.getElementById('page-'+tab).classList.add('active');
+  const tabs = ['grid','plants','assoc','saves','export','debug'];
   document.querySelectorAll('.tab')[tabs.indexOf(tab)]?.classList.add('active');
-  if (tab === 'export') { updateExportPreview(); }
-  if (tab === 'assoc')  { renderCurrentSuggestions(); }
+  if (tab==='export') updateExportPreview();
+  if (tab==='assoc')  renderCurrentSuggestions();
+  if (tab==='debug')  renderDebug();
 }
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 //  PERSISTENCE
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 function saveState() {
-  try {
-    localStorage.setItem('huerta_state', JSON.stringify({ COLS, ROWS, grid, plants }));
-  } catch(e) {}
+  try { localStorage.setItem('huerta_state', JSON.stringify({COLS,ROWS,grid,plants})); } catch(e) {}
 }
 
 function loadState() {
@@ -1146,36 +1128,118 @@ function loadState() {
     const raw = localStorage.getItem('huerta_state');
     if (!raw) return;
     const s = JSON.parse(raw);
-    COLS   = s.COLS   || COLS;
-    ROWS   = s.ROWS   || ROWS;
-    grid   = s.grid   || grid;
-    plants = s.plants || plants;
+    COLS=s.COLS||COLS; ROWS=s.ROWS||ROWS; grid=s.grid||grid; plants=s.plants||plants;
   } catch(e) {}
 }
 
-// ════════════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════════════
-function getPlant(id) { return plants.find(p => p.id === id); }
+// ══════════════════════════════════════════
+//  DEBUG PANEL
+// ══════════════════════════════════════════
+function renderDebug() {
+  const present = {};
+  for (let r=0;r<ROWS;r++) for (let c=0;c<COLS;c++) if (grid[r][c]) present[grid[r][c]]=(present[grid[r][c]]||0)+1;
+  const totalCells=ROWS*COLS, usedCells=Object.values(present).reduce((a,b)=>a+b,0);
+  const pct=((usedCells/totalCells)*100).toFixed(1);
 
-let toastTimer = null;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  document.getElementById('debugGrid').innerHTML=`
+    <div style="font-size:13px;line-height:2">
+      <div>📐 Grilla: <strong>${COLS}×${ROWS}</strong> = ${totalCells} celdas (${COLS*10}×${ROWS*10} cm)</div>
+      <div>🌱 Ocupadas: <strong>${usedCells}</strong> de ${totalCells} (${pct}%)</div>
+      <div>⬛ Vacías: <strong>${totalCells-usedCells}</strong></div>
+      <div>🌿 Especies: <strong>${Object.keys(present).length}</strong></div>
+      <div>⚠️ Conflictos: <strong style="color:${errors.size?'var(--red)':'var(--green)'}">${errors.size>0?errors.size/2+' pares':'Ninguno ✅'}</strong></div>
+      <div>↩️ Historial: <strong>${historyIndex+1}</strong> de ${history.length} pasos</div>
+    </div>
+    <div style="margin-top:8px">${Object.entries(present).map(([pid,n])=>{
+      const p=getPlant(pid); if(!p) return '';
+      return `<div style="font-size:12px;padding:4px 0;border-bottom:1px solid #f0f0f0">${p.emoji} <strong>${p.name}</strong> — ${n} plantas · dist. ${p.dist}cm</div>`;
+    }).join('')}</div>`;
+
+  const recs=[];
+  ASSOCIATIONS.forEach(a=>{
+    if(a.type!=='good') return;
+    const pa=getPlant(a.a),pb=getPlant(a.b); if(!pa||!pb) return;
+    if(present[a.a]&&!present[a.b]) recs.push({icon:'💡',color:'#e8f5e9',text:`Tenés ${pa.emoji} <strong>${pa.name}</strong> — considerá agregar ${pb.emoji} <strong>${pb.name}</strong>. ${a.note}`});
+    if(present[a.b]&&!present[a.a]) recs.push({icon:'💡',color:'#e8f5e9',text:`Tenés ${pb.emoji} <strong>${pb.name}</strong> — considerá agregar ${pa.emoji} <strong>${pa.name}</strong>. ${a.note}`});
+  });
+  Object.entries(present).forEach(([pid,n])=>{
+    const p=getPlant(pid); if(!p) return;
+    const maxFit=Math.floor(totalCells/(Math.ceil(p.dist/10)**2));
+    if(n>maxFit) recs.push({icon:'⚠️',color:'#fff3e0',text:`Tenés <strong>${n} ${p.emoji} ${p.name}</strong> pero entran máximo ~${maxFit} respetando distancias.`});
+  });
+  if(usedCells===0) recs.push({icon:'👋',color:'#e3f2fd',text:'La grilla está vacía. Seleccioná una planta y empezá a plantar.'});
+  else if(parseFloat(pct)<20) recs.push({icon:'🌱',color:'#e8f5e9',text:`Solo usás el ${pct}% del espacio. ¡Podés plantar más!`});
+  else if(parseFloat(pct)>85) recs.push({icon:'🔴',color:'#ffebee',text:`Usás el ${pct}% del espacio. Verificá las distancias mínimas.`});
+
+  document.getElementById('debugRecommendations').innerHTML=recs.length
+    ?recs.map(r=>`<div style="background:${r.color};border-radius:8px;padding:9px 12px;margin-bottom:6px;font-size:12px;line-height:1.5">${r.icon} ${r.text}</div>`).join('')
+    :'<div style="color:var(--gray);font-size:13px">✅ Todo se ve bien.</div>';
+
+  const conflictDetails=[]; const seen=new Set();
+  errors.forEach(key=>{
+    const [r,c]=key.split(',').map(Number); const pid=grid[r][c]; if(!pid) return;
+    const p=getPlant(pid); if(!p) return;
+    const mc=Math.ceil(p.dist/10);
+    for(let dr=-mc;dr<=mc;dr++) for(let dc=-mc;dc<=mc;dc++){
+      if(!dr&&!dc) continue;
+      const nr=r+dr,nc=c+dc;
+      if(nr<0||nr>=ROWS||nc<0||nc>=COLS) continue;
+      if(grid[nr][nc]===pid){
+        const dist=Math.round(Math.sqrt(dr*dr+dc*dc)*10);
+        const pk=[Math.min(r*100+c,nr*100+nc),Math.max(r*100+c,nr*100+nc)].join('-');
+        if(!seen.has(pk)&&dist<p.dist){seen.add(pk);conflictDetails.push(`<div style="font-size:12px;padding:5px 0;border-bottom:1px solid #ffcdd2">${p.emoji} F${r+1}C${c+1} ↔ F${nr+1}C${nc+1} — <strong style="color:var(--red)">${dist}cm</strong> (mín. ${p.dist}cm)</div>`);}
+      }
+    }
+  });
+  document.getElementById('debugConflicts').innerHTML=conflictDetails.length
+    ?`<div style="background:var(--red-pale);border-radius:8px;padding:8px 12px">${conflictDetails.join('')}</div>`
+    :'<div style="color:var(--green);font-size:13px">✅ Sin conflictos de distancia.</div>';
+
+  const barW=Math.round(parseFloat(pct));
+  const barColor=barW>85?'var(--red)':barW>50?'var(--yellow)':'var(--green)';
+  document.getElementById('debugSpace').innerHTML=`
+    <div style="font-size:12px;margin-bottom:6px">Ocupación: <strong>${pct}%</strong></div>
+    <div style="background:#e0e0e0;border-radius:10px;height:14px;overflow:hidden">
+      <div style="width:${barW}%;background:${barColor};height:100%;border-radius:10px;transition:width 0.4s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--gray);margin-top:3px"><span>0%</span><span>50%</span><span>100%</span></div>
+    <div style="font-size:12px;margin-top:10px">Área total: <strong>${(COLS*ROWS*100).toLocaleString()} cm²</strong> · Plantada: <strong>${(usedCells*100).toLocaleString()} cm²</strong></div>`;
+
+  try {
+    const sr=localStorage.getItem('huerta_state')||'{}', sv=localStorage.getItem('huerta_saves')||'[]';
+    const saves=JSON.parse(sv);
+    document.getElementById('debugStorage').innerHTML=`
+      <div style="font-size:12px;line-height:2">
+        <div>💾 Estado actual: <strong>${(new Blob([sr]).size/1024).toFixed(1)} KB</strong></div>
+        <div>📁 Diseños guardados: <strong>${saves.length}</strong> (${(new Blob([sv]).size/1024).toFixed(1)} KB)</div>
+      </div>`;
+  } catch(e){ document.getElementById('debugStorage').innerHTML='<span style="color:var(--red);font-size:12px">Error leyendo almacenamiento</span>'; }
 }
 
-// ════════════════════════════════════════════════
-//  ANDROID BRIDGE (llamado desde Java/Kotlin)
-// ════════════════════════════════════════════════
-window.getGridText = () => getTextGrid();
-window.clearGridExternal = () => { clearGrid(); };
+function clearStorage() {
+  if (!confirm('¿Borrar TODO el almacenamiento?')) return;
+  localStorage.clear(); toast('Almacenamiento borrado 🗑️'); renderDebug();
+}
 
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function getPlant(id) { return plants.find(p => p.id === id); }
+
+let toastTimer=null;
+function toast(msg) {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+window.getGridText = () => getTextGrid();
+window.clearGridExternal = () => clearGrid();
+
+// ══════════════════════════════════════════
 //  START
-// ════════════════════════════════════════════════
+// ══════════════════════════════════════════
 init();
 </script>
 </body>
