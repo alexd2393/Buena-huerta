@@ -29,32 +29,12 @@ jobs:
       - name: 📦 Download Gradle Wrapper JAR y generar gradlew
         run: |
           mkdir -p gradle/wrapper
-
-          # Descargar gradle-wrapper.jar
           curl -sL "https://github.com/gradle/gradle/raw/v8.4.0/gradle/wrapper/gradle-wrapper.jar" \
             -o gradle/wrapper/gradle-wrapper.jar
-
-          # Crear gradlew si no existe en el repo
           if [ ! -f "gradlew" ]; then
-            echo "gradlew no encontrado, generándolo..."
-            cat > gradlew << 'GRADLEW'
-#!/usr/bin/env sh
-if [ -n "$JAVA_HOME" ]; then
-  JAVACMD="$JAVA_HOME/bin/java"
-else
-  JAVACMD="java"
-fi
-APP_HOME="$(cd "$(dirname "$0")" && pwd -P)"
-CLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"
-exec "$JAVACMD" \
-  -classpath "$CLASSPATH" \
-  org.gradle.wrapper.GradleWrapperMain "$@"
-GRADLEW
+            printf '#!/usr/bin/env sh\nif [ -n "$JAVA_HOME" ]; then\n  JAVACMD="$JAVA_HOME/bin/java"\nelse\n  JAVACMD="java"\nfi\nAPP_HOME="$(cd "$(dirname "$0")" && pwd -P)"\nCLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"\nexec "$JAVACMD" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"\n' > gradlew
           fi
-
           chmod +x gradlew
-          echo "✅ gradlew listo: $(ls -lh gradlew)"
-          echo "✅ JAR listo: $(ls -lh gradle/wrapper/gradle-wrapper.jar)"
 
       - name: 📦 Cache Gradle packages
         uses: actions/cache@v4
