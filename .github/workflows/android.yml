@@ -29,18 +29,14 @@ jobs:
       - name: 🤖 Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 📦 Preparar Gradle Wrapper
+      - name: 📦 Instalar Gradle y generar wrapper
         run: |
-          mkdir -p gradle/wrapper
-          curl -sL "https://github.com/gradle/gradle/raw/v8.4.0/gradle/wrapper/gradle-wrapper.jar" \
-            -o gradle/wrapper/gradle-wrapper.jar
-          if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
-            printf 'distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\://services.gradle.org/distributions/gradle-8.4-all.zip\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists\n' > gradle/wrapper/gradle-wrapper.properties
-          fi
-          if [ ! -f "gradlew" ]; then
-            printf '#!/usr/bin/env sh\nif [ -n "$JAVA_HOME" ]; then\n  JAVACMD="$JAVA_HOME/bin/java"\nelse\n  JAVACMD="java"\nfi\nAPP_HOME="$(cd "$(dirname "$0")" && pwd -P)"\nCLASSPATH="$APP_HOME/gradle/wrapper/gradle-wrapper.jar"\nexec "$JAVACMD" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"\n' > gradlew
-          fi
+          curl -sL https://services.gradle.org/distributions/gradle-8.4-bin.zip -o /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /tmp/gradle-dist
+          /tmp/gradle-dist/gradle-8.4/bin/gradle wrapper --gradle-version 8.4 --distribution-type all
           chmod +x gradlew
+          echo "✅ gradlew generado correctamente"
+          head -5 gradlew
 
       - name: 📦 Cache Gradle
         uses: actions/cache@v4
@@ -48,7 +44,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('huerta-app/**/*.gradle*', 'huerta-app/**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('huerta-app/**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
